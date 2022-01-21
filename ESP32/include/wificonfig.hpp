@@ -16,21 +16,15 @@ std::string serverEndPoint = config.serverEndPoint;
 void ConnectToWiFi()
 {
 
-    WiFi.mode(WIFI_STA);
+    
     WiFi.begin(SSID, PASSWORD);
     Serial.print("Connecting to ");
     Serial.println(SSID);
 
-    uint8_t i = 0;
     while (WiFi.status() != WL_CONNECTED)
     {
-        Serial.print('.');
-        delay(500);
-
-        if ((++i % 16) == 0)
-        {
-            Serial.println(F(" still trying to connect"));
-        }
+        delay(1000);
+        Serial.print(".");
     }
 
     Serial.print(F("Connected. My IP address is: "));
