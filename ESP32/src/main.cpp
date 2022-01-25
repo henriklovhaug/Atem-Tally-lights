@@ -6,14 +6,13 @@ extern struct ESPconfig config;
 
 int cameraNumber = config.CameraNumber;
 
-uint8_t LED1pin = GPIO_NUM_22;
-uint8_t test = GPIO_NUM_22;
+uint8_t LED1pin = GPIO_NUM_23;
 bool LED1status = LOW;
 
-uint8_t LED2pin = 5;
+uint8_t LED2pin = GPIO_NUM_22;
 bool LED2status = LOW;
 
-uint8_t LED3pin = 6;
+uint8_t LED3pin = GPIO_NUM_21;
 bool LED3status = LOW;
 
 WebServer server(80);
@@ -67,8 +66,8 @@ void setup()
     delay(100);
 
     pinMode(LED1pin, OUTPUT);
-    // pinMode(LED2pin, OUTPUT);
-    // pinMode(LED3pin, OUTPUT);
+    pinMode(LED2pin, OUTPUT);
+    pinMode(LED3pin, OUTPUT);
 }
 
 /* Main loop */
@@ -77,4 +76,12 @@ void loop()
     delay(10);
     server.handleClient();
     reconnect();
+    if (isConnected())
+    {
+        digitalWrite(LED3pin, HIGH);
+    }
+    else
+    {
+        digitalWrite(LED3pin, LOW);
+    }
 }
