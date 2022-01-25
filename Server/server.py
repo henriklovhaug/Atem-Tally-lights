@@ -38,6 +38,7 @@ def on_camera_change(params) -> (int,int):
     print("Current preview: ",atem.previewInput[0].videoSource)
     print("--------------------------")
     current = list(str(atem.programInput[0].videoSource))[5] if list(str(atem.programInput[0].videoSource))[0] == "i" else 0
+    preview = list(str(atem.previewInput[0].videoSource))[5] if list(str(atem.previewInput[0].videoSource))[0] == "i" else 0
     print(current)
 
 
