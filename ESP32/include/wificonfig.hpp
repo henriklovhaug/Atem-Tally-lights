@@ -6,17 +6,19 @@
 
 #pragma once
 
+using namespace std;
+
 ESPconfig config;
 
 const char *SSID = config.SSID;
 const char *PASSWORD = config.PASSWORD;
 
-std::string serverEndPoint = config.serverEndPoint;
+string serverEndPoint = config.serverEndPoint;
 
 void ConnectToWiFi()
 {
 
-    
+
     WiFi.begin(SSID, PASSWORD);
     Serial.print("Connecting to ");
     Serial.println(SSID);
