@@ -1,14 +1,10 @@
-from http.server import HTTPServer, BaseHTTPRequestHandler
 import PyATEMMax
 import time
 import netifaces as ni
-import requests
+from requests_futures.sessions import FuturesSession
 
 atem = PyATEMMax.ATEMMax()
-
-prev_preview = 0
-prev_current = 0
-
+session = FuturesSession()
 
 # State:
 #   0 = Off
@@ -18,7 +14,8 @@ class Camera():
     def __init__(self,ip,number):
         self.ip = ip
         self.number = number
-        self.state = 0
+        self.live = 0
+        self.preview = 0
 
 
 camera1 = Camera("192.168.1.4", 1)
@@ -34,7 +31,7 @@ def find_atem_ip() -> str:
     ip_subnet = str(ip).split(".")[2]
     print(ip)
     print(ip_subnet)
-    for i in range(1, 255):
+    for i in range(254, 1, -1):
         ip = f"192.168.{ip_subnet}.{i}"
         print(f"Checking {ip}", end="\r")
         atem.ping(ip)
@@ -50,86 +47,58 @@ def is_atem_ip(ip) -> bool:
 
 
 def on_camera_change(params):
-    global prev_preview
-    global prev_current
 
-    # print("--------------------------")
-    # print("Current input: ", atem.programInput[0].videoSource)
-    # print("Current preview: ", atem.previewInput[0].videoSource)
-    # print("--------------------------")
-    current = list(str(atem.programInput[0].videoSource))[5] if list(
-        str(atem.programInput[0].videoSource))[0] == "i" else 0
+    print("--------------------------")
+    print("live input: ", atem.programInput[0].videoSource)
+    print("preview: ", atem.previewInput[0].videoSource)
+    print("--------------------------")
+    live = int(list(str(atem.programInput[0].videoSource))[5]) if list(
+        str(atem.programInput[0].videoSource))[0] == "i" else None
 
-    preview = list(str(atem.previewInput[0].videoSource))[5] if list(
-        str(atem.previewInput[0].videoSource))[0] == "i" else 0
-
-    if prev_current != current:
-        update_camera(cameralist[int(current)-1 if current != 0 else 0], 2)
-        update_camera(cameralist[int(prev_current)-1 if current != 0 else 0], 0)
-        prev_current = current
-
-    if prev_preview != preview:
-        update_camera(cameralist[int(prev_preview)-1 if current != 0 else 0], 0)
-        if preview != current:
-            update_camera(cameralist[int(preview)-1 if current != 0 else 0], 1)
-        prev_preview = preview
-
-    #print(current)
+    preview = int(list(str(atem.previewInput[0].videoSource))[5]) if list(
+        str(atem.previewInput[0].videoSource))[0] == "i" else None
 
 
-def update_camera(camera: Camera, state):
-    if state == 2:
-        try:
-            r = requests.get("http://"+camera.ip)
-            print(r.status_code)
-            print("Send turn on request")
-        except OSError:
-            print("failed to connect")
-            pass
-    elif state == 1:
-        try:
-            r = requests.get("http://"+camera.ip+"/preview")
-            print(r.status_code)
-            print("Sent preview request")
-        except OSError:
-            pass
-    else:
-        try:
-            r = requests.get("http://"+camera.ip+"/off")
-            print(r.status_code)
-            print("Sent preview request")
-        except OSError:
-            pass
+    if live != None:
+        for camera in cameralist:
+            if camera.number == live:
+                if camera.live == 0:
+                    update_camera(camera, "live", 1)
+            else:
+                if camera.live == 1:
+                    update_camera(camera, "live", 0)
+
+    if preview != None:
+        for camera in cameralist:
+            if camera.number == preview:
+                if camera.preview == 0:
+                    update_camera(camera, "preview", 1)
+            else:
+                if camera.preview == 1:
+                    update_camera(camera, "preview", 0)
 
 
+    #print(live)
 
-class Handler(BaseHTTPRequestHandler):
 
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'text/html')
-        self.end_headers()
-
-        self.written_bytes = 0
-
-        for key, value in status.items():
-            if self.path == key:
-                self.written_bytes += self.wfile.write(value.encode())
-
-        if self.written_bytes == 0:
-            self.wfile.write("Endpoint not in use".encode())
+def update_camera(camera: Camera, camera_property, state):
+    try:
+        r = session.get(f"http://{camera.ip}/{camera_property}/{state}")
+        if camera_property == "live":
+            camera.live = state
+        else:
+            camera.preview = state
+    except OSError:
+        pass
 
 
 if __name__ == "__main__":
-    # ip = find_atem_ip()
-    ip = "192.168.0.240"
+    ip = find_atem_ip()
     # When disconnected, variable should be reassigned. Why? I dunno, it works
     atem = PyATEMMax.ATEMMax()
     atem.registerEvent(atem.atem.events.receive, on_camera_change)
     atem.connect(ip)
     atem.waitForConnection()
-    print("Current Atem device is: ", atem.atemModel)
+    print("live Atem device is: ", atem.atemModel)
     while True:
-        # print(atem.connected)
-        # print(ip)
-        time.sleep(0.5)
+        time.sleep(42) # DO NOT REMOVE! HAS TO BE 42!
