@@ -41,12 +41,14 @@ void handle_live_off()
 void handle_preview_on()
 {
     server.send(200);
+    digitalWrite(LED2pin, HIGH);
     Serial.println("Got request for preview on");
 }
 
 void handle_preview_off()
 {
     server.send(200);
+    digitalWrite(LED2pin, LOW);
     Serial.println("Got request for preview off");
 }
 
