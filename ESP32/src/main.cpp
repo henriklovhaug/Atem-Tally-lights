@@ -6,7 +6,8 @@ extern struct ESPconfig config;
 
 int cameraNumber = config.CameraNumber;
 
-uint8_t LED1pin = 4;
+uint8_t LED1pin = GPIO_NUM_22;
+uint8_t test = GPIO_NUM_22;
 bool LED1status = LOW;
 
 uint8_t LED2pin = 5;
@@ -27,12 +28,14 @@ String HTML = "<!DOCTYPE html>\
 void handle_live_on()
 {
     server.send(200);
+    digitalWrite(LED1pin, HIGH);
     Serial.println("Got request for live on");
 }
 
 void handle_live_off()
 {
     server.send(200);
+    digitalWrite(LED1pin, LOW);
     Serial.println("Got request for live off");
 }
 
@@ -63,7 +66,7 @@ void setup()
     server.begin();
     delay(100);
 
-    // pinMode(LED1pin, OUTPUT);
+    pinMode(LED1pin, OUTPUT);
     // pinMode(LED2pin, OUTPUT);
     // pinMode(LED3pin, OUTPUT);
 }
@@ -71,43 +74,7 @@ void setup()
 /* Main loop */
 void loop()
 {
-    delay(500);
+    delay(10);
     server.handleClient();
-
-    // if (!isConnected())
-    // {
-    //     reconnect();
-    // }
-
-    // else
-    // {
-    //     /* Ping server to check camera int */
-    // }
-
-    // if (LED1status)
-    // {
-    //     digitalWrite(LED1pin, HIGH);
-    // }
-    // else
-    // {
-    //     digitalWrite(LED1pin, LOW);
-    // }
-
-    // if (LED2status)
-    // {
-    //     digitalWrite(LED2pin, HIGH);
-    // }
-    // else
-    // {
-    //     digitalWrite(LED2pin, LOW);
-    // }
-
-    // if (LED3status)
-    // {
-    //     digitalWrite(LED3pin, HIGH);
-    // }
-    // else
-    // {
-    //     digitalWrite(LED3pin, LOW);
-    // }
+    reconnect();
 }

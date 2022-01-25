@@ -15,9 +15,10 @@ const char *PASSWORD = config.PASSWORD;
 
 
 
+
 void ConnectToWiFi()
 {
-
+    WiFi.config(config.local_ip, config.gateway, config.subnet);
 
     WiFi.begin(SSID, PASSWORD);
     Serial.print("Connecting to ");
