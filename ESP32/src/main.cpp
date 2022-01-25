@@ -24,10 +24,28 @@ String HTML = "<!DOCTYPE html>\
 </body>\
 </html>";
 
-void handle_root()
+void handle_live_on()
 {
-    server.send(200, "text/html", HTML);
-    Serial.println("Got request for root");
+    server.send(200);
+    Serial.println("Got request for live on");
+}
+
+void handle_live_off()
+{
+    server.send(200);
+    Serial.println("Got request for live off");
+}
+
+void handle_preview_on()
+{
+    server.send(200);
+    Serial.println("Got request for preview on");
+}
+
+void handle_preview_off()
+{
+    server.send(200);
+    Serial.println("Got request for preview off");
 }
 
 void setup()
@@ -35,7 +53,13 @@ void setup()
     Serial.begin(9600);
 
     ConnectToWiFi();
-    server.on("/", handle_root);
+    server.on("/live/1", handle_live_on);
+    server.on("/live/0", handle_live_off);
+    server.on("/preview/1", handle_preview_on);
+    server.on("/preview/0", handle_preview_off);
+    server.onNotFound([]() {
+        server.send(200, "text/html", HTML);
+    });
     server.begin();
     delay(100);
 

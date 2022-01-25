@@ -13,7 +13,7 @@ ESPconfig config;
 const char *SSID = config.SSID;
 const char *PASSWORD = config.PASSWORD;
 
-string serverEndPoint = config.serverEndPoint;
+
 
 void ConnectToWiFi()
 {
@@ -49,24 +49,4 @@ void reconnect()
             Serial.print("Reconnecting to WiFi...");
         }
     }
-}
-
-int getIsCameraActive()
-{
-    HTTPClient http;
-
-    http.begin(serverEndPoint.c_str());
-
-    int httpCode = http.GET();
-
-    if (httpCode > 0)
-    {
-        if (httpCode == HTTP_CODE_OK)
-        {
-            String payload = http.getString();
-            Serial.println(payload);
-            return payload.toInt();
-        }
-    }
-    return 0;
 }
