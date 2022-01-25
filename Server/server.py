@@ -19,7 +19,6 @@ def find_atem_ip() -> str:
         if atem.waitForConnection(waitForFullHandshake=False):
             print(f"ATEM found at {ip}")
             break
-    switcher.disconnect()
     return ip
 
 status = {
@@ -29,7 +28,11 @@ status = {
     "/cam4": "inactive",
 }
 
-def on_camera_change(params):
+def is_atem_ip(ip) -> bool:
+    atem.ping(ip)
+    return atem.waitForConnection(waitForFullHandshake=False)
+
+def on_camera_change(params) -> (int,int):
     print("--------------------------")
     print("Current input: ",atem.programInput[0].videoSource)
     print("Current preview: ",atem.previewInput[0].videoSource)
@@ -56,13 +59,13 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    ip = find_atem_ip()
+    # ip = find_atem_ip()
+    ip = "192.168.0.240"
     atem = PyATEMMax.ATEMMax() # When disconnected, variable should be reassigned. Why? I dunno, it works
     atem.registerEvent(atem.atem.events.receive, on_camera_change)
     atem.connect(ip)
     atem.waitForConnection()
     print("Current Atem device is: ", atem.atemModel)
-    flip = True
     while True:
         # print(atem.connected)
         # print(ip)
