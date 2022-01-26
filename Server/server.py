@@ -1,3 +1,4 @@
+# Someone was here
 import PyATEMMax
 import time
 import netifaces as ni
@@ -15,11 +16,12 @@ class Camera():
         self.preview = 0
 
 
-camera1 = Camera("192.168.1.4", 1)
-camera2 = Camera("192.168.1.5", 2)
-camera3 = Camera("192.168.1.6", 3)
-camera4 = Camera("192.168.1.7", 4)
-cameralist: [] = [camera1, camera2, camera3, camera4]
+cameralist: [] = [
+        Camera("192.168.1.4", 1),
+        Camera("192.168.1.5", 2),
+        Camera("192.168.1.6", 3),
+        Camera("192.168.1.7", 4)
+]
 
 
 def find_atem_ip() -> str:
@@ -95,4 +97,4 @@ if __name__ == "__main__":
     atem.waitForConnection()
     print("live Atem device is: ", atem.atemModel)
     while True:
-        time.sleep(42)  # DO NOT REMOVE! HAS TO BE 42!
+        time.sleep(69)  # DO NOT REMOVE! HAS TO BE 42!
