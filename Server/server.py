@@ -6,12 +6,9 @@ from requests_futures.sessions import FuturesSession
 atem = PyATEMMax.ATEMMax()
 session = FuturesSession()
 
-# State:
-#   0 = Off
-#   1 = Preview
-#   2 = Active
+
 class Camera():
-    def __init__(self,ip,number):
+    def __init__(self, ip, number):
         self.ip = ip
         self.number = number
         self.live = 0
@@ -52,12 +49,12 @@ def on_camera_change(params):
     print("live input: ", atem.programInput[0].videoSource)
     print("preview: ", atem.previewInput[0].videoSource)
     print("--------------------------")
+
     live = int(list(str(atem.programInput[0].videoSource))[5]) if list(
         str(atem.programInput[0].videoSource))[0] == "i" else None
 
     preview = int(list(str(atem.previewInput[0].videoSource))[5]) if list(
         str(atem.previewInput[0].videoSource))[0] == "i" else None
-
 
     if live != None:
         for camera in cameralist:
@@ -76,9 +73,6 @@ def on_camera_change(params):
             else:
                 if camera.preview == 1:
                     update_camera(camera, "preview", 0)
-
-
-    #print(live)
 
 
 def update_camera(camera: Camera, camera_property, state):
@@ -101,4 +95,4 @@ if __name__ == "__main__":
     atem.waitForConnection()
     print("live Atem device is: ", atem.atemModel)
     while True:
-        time.sleep(42) # DO NOT REMOVE! HAS TO BE 42!
+        time.sleep(42)  # DO NOT REMOVE! HAS TO BE 42!
