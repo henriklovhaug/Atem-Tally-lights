@@ -1,10 +1,6 @@
 #include <wificonfig.hpp>
-#include <config.hpp>
 #include <WebServer.h>
 
-extern struct ESPconfig config;
-
-int cameraNumber = config.CameraNumber;
 
 uint8_t LED1pin = GPIO_NUM_23;
 bool LED1status = LOW;
