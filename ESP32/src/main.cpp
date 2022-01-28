@@ -2,13 +2,13 @@
 #include <WebServer.h>
 
 
-uint8_t LED1pin = GPIO_NUM_23;
+uint8_t LEDRed = GPIO_NUM_34;
 bool LED1status = LOW;
 
-uint8_t LED2pin = GPIO_NUM_22;
+uint8_t LEDGreen = GPIO_NUM_35;
 bool LED2status = LOW;
 
-uint8_t LED3pin = GPIO_NUM_21;
+uint8_t LEDBlue = GPIO_NUM_26;
 bool LED3status = LOW;
 
 WebServer server(80);
@@ -23,28 +23,28 @@ String HTML = "<!DOCTYPE html>\
 void handle_live_on()
 {
     server.send(200);
-    digitalWrite(LED1pin, HIGH);
+    digitalWrite(LEDRed, HIGH);
     Serial.println("Got request for live on");
 }
 
 void handle_live_off()
 {
     server.send(200);
-    digitalWrite(LED1pin, LOW);
+    digitalWrite(LEDRed, LOW);
     Serial.println("Got request for live off");
 }
 
 void handle_preview_on()
 {
     server.send(200);
-    digitalWrite(LED2pin, HIGH);
+    digitalWrite(LEDGreen, HIGH);
     Serial.println("Got request for preview on");
 }
 
 void handle_preview_off()
 {
     server.send(200);
-    digitalWrite(LED2pin, LOW);
+    digitalWrite(LEDGreen, LOW);
     Serial.println("Got request for preview off");
 }
 
@@ -63,9 +63,9 @@ void setup()
     server.begin();
     delay(100);
 
-    pinMode(LED1pin, OUTPUT);
-    pinMode(LED2pin, OUTPUT);
-    pinMode(LED3pin, OUTPUT);
+    pinMode(LEDRed, OUTPUT);
+    pinMode(LEDGreen, OUTPUT);
+    pinMode(LEDBlue, OUTPUT);
 }
 
 /* Main loop */
@@ -76,10 +76,10 @@ void loop()
     reconnect();
     if (isConnected())
     {
-        digitalWrite(LED3pin, HIGH);
+        digitalWrite(LEDBlue, HIGH);
     }
     else
     {
-        digitalWrite(LED3pin, LOW);
+        digitalWrite(LEDBlue, LOW);
     }
 }
