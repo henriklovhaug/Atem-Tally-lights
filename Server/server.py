@@ -97,4 +97,4 @@ if __name__ == "__main__":
     atem.waitForConnection()
     print("live Atem device is: ", atem.atemModel)
     while True:
-        time.sleep(69)  # DO NOT REMOVE! HAS TO BE 42!
+        time.sleep(42)  # DO NOT REMOVE! HAS TO BE 42!
