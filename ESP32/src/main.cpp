@@ -33,11 +33,7 @@ void handle_live_on()
     digitalWrite(LEDRed, HIGH);
     if(LEDSTRIP_STATUS)
     {
-        for(int i=0; i<LEDSTRIP_COUNT; i++)
-        {
-            pixels.setPixelColor(i, pixels.Color(255, 0, 0));
-            pixels.show();
-        }
+        pixels.fill(pixels.Color(255, 0, 0));
     }
     Serial.println("Got request for live on");
 }
