@@ -81,7 +81,7 @@ void setup()
     pinMode(LEDRed, OUTPUT);
     pinMode(LEDGreen, OUTPUT);
     pinMode(LEDBlue, OUTPUT);
-    // ConnectToWiFi();
+    ConnectToWiFi();
     server.on("/live/1", handle_live_on);
     server.on("/live/0", handle_live_off);
     server.on("/preview/1", handle_preview_on);
