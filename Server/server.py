@@ -2,6 +2,7 @@
 import PyATEMMax
 import time
 import netifaces as ni
+import sys
 from requests_futures.sessions import FuturesSession
 
 atem = PyATEMMax.ATEMMax()
@@ -33,6 +34,7 @@ def find_atem_ip() -> str:
     for i in range(254, 1, -1):
         ip = f"192.168.{ip_subnet}.{i}"
         print(f"Checking {ip}", end="\r")
+        sys.stdout.flush()
         atem.ping(ip)
         if atem.waitForConnection(waitForFullHandshake=False):
             print(f"ATEM found at {ip}")
@@ -92,7 +94,7 @@ if __name__ == "__main__":
     ip = find_atem_ip()
     # When disconnected, variable should be reassigned. Why? I dunno, it works
     atem = PyATEMMax.ATEMMax()
-    atem.registerEvent(atem.atem.events.receive, on_camera_change)
+    atem.registerEvent(atem.atem.events.receive, update_camera)
     atem.connect(ip)
     atem.waitForConnection()
     print("live Atem device is: ", atem.atemModel)
