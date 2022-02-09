@@ -33,7 +33,11 @@ void handle_live_on()
     digitalWrite(LEDRed, HIGH);
     if(LEDSTRIP_STATUS)
     {
-        pixels.fill(pixels.Color(255, 0, 0));
+       for(int i = 0; i < LEDSTRIP_COUNT; i++)
+       {
+          pixels.setPixelColor(i, pixels.Color(255, 0, 0));
+          pixels.show();
+       }
     }
     Serial.println("Got request for live on");
 }
@@ -42,6 +46,7 @@ void handle_live_off()
 {
     server.send(200);
     pixels.clear();
+    pixels.show();
     digitalWrite(LEDRed, LOW);
     Serial.println("Got request for live off");
 }
