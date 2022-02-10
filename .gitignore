@@ -1,3 +1,4 @@
 ESP32-mockserver/
 Server/test.py
 ESP32/src/main2.cpp
+__pycache__
