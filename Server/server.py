@@ -27,6 +27,8 @@ cameralist: [] = [
 
 def find_atem_ip() -> str:
     ni.ifaddresses('eth0')
+    while not ni.AF_INET in ni.ifaddresses('eth0').keys():
+        time.sleep(1)
     ip = ni.ifaddresses('eth0')[ni.AF_INET][0]['addr']
     ip_subnet = str(ip).split(".")[2]
     print(ip)
@@ -95,6 +97,7 @@ if __name__ == "__main__":
     # When disconnected, variable should be reassigned. Why? I dunno, it works
     atem = PyATEMMax.ATEMMax()
     atem.registerEvent(atem.atem.events.receive, update_camera)
+    atem.registerEvent(atem.atem.events.disconnect, find_atem_ip)
     atem.connect(ip)
     atem.waitForConnection()
     print("live Atem device is: ", atem.atemModel)
