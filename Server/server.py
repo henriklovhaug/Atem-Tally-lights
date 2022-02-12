@@ -96,7 +96,7 @@ if __name__ == "__main__":
     ip = find_atem_ip()
     # When disconnected, variable should be reassigned. Why? I dunno, it works
     atem = PyATEMMax.ATEMMax()
-    atem.registerEvent(atem.atem.events.receive, update_camera)
+    atem.registerEvent(atem.atem.events.receive, on_camera_change)
     atem.registerEvent(atem.atem.events.disconnect, find_atem_ip)
     atem.connect(ip)
     atem.waitForConnection()
