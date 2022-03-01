@@ -1,20 +1,24 @@
+#include <Arduino.h>
 #include <wificonfig.hpp>
 #include <WebServer.h>
 #include <Adafruit_NeoPixel.h>
 
 
 uint8_t LEDRed = GPIO_NUM_23;
+uint8_t LEDRedChannel = 0;
 bool LED1status = LOW;
 
 uint8_t LEDGreen = GPIO_NUM_22;
+uint8_t LEDGreenChannel = 1;
 bool LED2status = LOW;
 
 uint8_t LEDBlue = GPIO_NUM_21;
+uint8_t LEDBlueChannel = 2;
 bool LED3status = LOW;
 
 #define LEDSTRIP_PIN GPIO_NUM_18
 uint8_t LEDSTRIP_COUNT = 3;
-bool LEDSTRIP_STATUS = true;
+bool LEDSTRIP_STATUS = false;
 
 Adafruit_NeoPixel pixels(LEDSTRIP_COUNT, LEDSTRIP_PIN, NEO_GRB + NEO_KHZ800);
 
@@ -30,7 +34,7 @@ String HTML = "<!DOCTYPE html>\
 void handle_live_on()
 {
     server.send(200);
-    digitalWrite(LEDRed, HIGH);
+    ledcWrite(LEDRedChannel, 155);
     if(LEDSTRIP_STATUS)
     {
        for(int i = 0; i < LEDSTRIP_COUNT; i++)
@@ -47,21 +51,21 @@ void handle_live_off()
     server.send(200);
     pixels.clear();
     pixels.show();
-    digitalWrite(LEDRed, LOW);
+    ledcWrite(LEDRedChannel, 0);
     Serial.println("Got request for live off");
 }
 
 void handle_preview_on()
 {
     server.send(200);
-    digitalWrite(LEDGreen, HIGH);
+    ledcWrite(LEDGreenChannel, 155);
     Serial.println("Got request for preview on");
 }
 
 void handle_preview_off()
 {
     server.send(200);
-    digitalWrite(LEDGreen, LOW);
+    ledcWrite(LEDGreenChannel, 0);
     Serial.println("Got request for preview off");
 }
 
@@ -79,9 +83,12 @@ void setup()
 {
     Serial.begin(9600);
 
-    pinMode(LEDRed, OUTPUT);
-    pinMode(LEDGreen, OUTPUT);
-    pinMode(LEDBlue, OUTPUT);
+    ledcAttachPin(LEDRed, 0);
+    ledcAttachPin(LEDGreen, 1);
+    ledcAttachPin(LEDBlue, 2);
+    ledcSetup(0, 1000, 8);
+    ledcSetup(1, 1000, 8);
+    ledcSetup(2, 1000, 8);
     ConnectToWiFi();
     server.on("/live/1", handle_live_on);
     server.on("/live/0", handle_live_off);
@@ -106,11 +113,11 @@ void loop()
     reconnect();
     if (isConnected())
     {
-        digitalWrite(LEDBlue, HIGH);
+        ledcWrite(LEDBlueChannel, 155);
     }
     else
     {
-        digitalWrite(LEDBlue, LOW);
+        ledcWrite(LEDBlueChannel, 0);
     }
 
 }
